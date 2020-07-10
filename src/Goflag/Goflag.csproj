@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <AssemblyName>GoFlag</AssemblyName>
+    <RootNamespace>GoFlag</RootNamespace>
+    <Version>0.1.0</Version>
+    <AssemblyTitle>Goflag</AssemblyTitle>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <InformationalVersion>0.1.0.0</InformationalVersion>
+    <PackageVersion>0.1.0</PackageVersion>
+    <PackageId>GoFlag</PackageId>
+    <Company></Company>
+    <Copyright>Copyright (c) 2020, Mike Ruhl</Copyright>
+    <Summary>C# port of the golang flag package that facilitates command-line parsing.</Summary>
+    <Description>C# port of the golang flag package that facilitates command-line parsing.</Description>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Authors>Mike Ruhl</Authors>
+    <Owners>Mike Ruhl</Owners>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <LangVersion>latest</LangVersion>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <AssemblyTitle>GoFlag</AssemblyTitle>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>goflag-icon.png</PackageIcon>
+    <PackageIconUrl>https://raw.githubusercontent.com/mikeruhl/goflag/main/goflag-icon.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/mikeruhl/Goflag</PackageProjectUrl>
+    <PackageTags>command-line parsing flags command flag cmd</PackageTags>
+    <PackageReleaseNotes>See https://github.com/mikeruhl/goflag/blob/main/CHANGELOG.md for details</PackageReleaseNotes>
+  </PropertyGroup>
+  <PropertyGroup Label="SourceLink">
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+  <ItemGroup Label="SourceLink">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.1' ">
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net461' or '$(TargetFramework)' == 'netstandard1.1'">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\goflag-icon.png" Pack="true" PackagePath=""/>
+  </ItemGroup>
+</Project>

@@ -9,6 +9,10 @@ It's a very elegant design and I wanted to port it for two reasons:
 
 If you have any questions or have any feature suggestions, please fire away. The footprint will always remain the same, but that doesn't mean we can't make some improvements and additions.
 
+[![Goflag logo](https://github.com/mikeruhl/goflag/blob/main/goflag-icon.png)
+
+[![NuGet version](https://badge.fury.io/nu/Goflag.svg)](https://badge.fury.io/nu/Goflag)
+
 ## Getting started
 
 To make things simple, all use can flow through a single static class `Flags`. It makes your command-line parsing life a simple breeze. Let's take a look at what it cna do.

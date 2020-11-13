@@ -185,6 +185,59 @@ Books:
         Life, the Universe and Everything
 ```
 
+## Generating Help Text
+
+This section came from a [request for help](https://github.com/mikeruhl/goflag/issues/1) from issues.  If you have a question, please don't hesitate to ask and I will add documentation on it.  Thanks!
+
+You can generate some simple, nice help text by passing `--help` or `-help` at the command line.  By default, passing the help flag and no other flag will not result in an error, however, you can have it error out still by creating your own `FlagSet` and passing in a stricter error handling flag.  The following two examples show two outcomes from passing the `help` flag.
+
+
+By default, we exit on error.  The error in this case would be that flags weren't supplied.  By just passing `-help`, we'll generate the help text then exit the program with a success code.
+```csharp
+static void Main(string[] args)
+{
+    var f = Flag.String("path", string.Empty, "path to file");
+    var m = Flag.String("message", "hello world", "message to place in file");
+    Flag.Parse();
+    Console.WriteLine($"Path supplied: {f}");
+    Console.WriteLine($"message: {m}");
+}
+```
+if I run `.\TestApp.exe -help`
+I will get:
+```
+Usage of C:\Users\miker\source\temp\TestApp\TestApp\bin\Debug\netcoreapp3.1\TestApp.dll:
+  -message string
+        message to place in file (default "hello world")
+  -path string
+        path to file
+```
+
+We can change the behavior and pass in different error handling, which will result in different outcome:
+```csharp
+static void Main(string[] args)
+{
+    var flagSet = new FlagSet("main", ErrorHandling.PanicOnError);
+    var f = flagSet.String("path", string.Empty, "path to file");
+    var m = flagSet.String("message", "hello world", "message to place in file");
+    flagSet.Parse(args);
+    Console.WriteLine($"Path supplied: {f}");
+    Console.WriteLine($"message: {m}");
+}
+```
+It will still print the help message but also throw an exception, which will result in a non-zero exit code `.\TestApp.exe -help`:
+```
+Usage of main:
+  -message string
+        message to place in file (default "hello world")
+  -path string
+        path to file
+Unhandled exception. System.InvalidOperationException: flag: help requested
+   at GoFlag.FlagSet.Parse(String[] arguments)
+   at TestApp.Program.Main(String[] args) in C:\Users\miker\source\temp\TestApp\TestApp\Program.cs:line 15
+```
+You can see the reason it errrored (help requested), and the stacktrace.
+
 ### Credits
 
 <a target="_blank" href="https://icons8.com/icons/set/empty-flag">Empty Flag icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>

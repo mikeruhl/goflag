@@ -238,6 +238,51 @@ Unhandled exception. System.InvalidOperationException: flag: help requested
 ```
 You can see the reason it errrored (help requested), and the stacktrace.
 
+## Error Handling
+
+There are three levels of error handling available per the [original spec](https://golang.org/pkg/flag/#ErrorHandling) and those have been included here:
+
+**ContinueOnError**
+
+As it states, this will continue execution on error.  Errors occur when a flag cannot be parsed to the desired value type.  The response of the `FlagSet.Parse()` method is `ParsingError`, which will be null if the parsing was successful.  Once an error occurs, parsing stops and the `Parse()` method returns the error.
+
+**ExitOnError (default)**
+
+When using the static implementation of `Flag`, this is the error handling strategy you get.  It will exit on error.  Passing the help command line is considered an error.  If this is passed, the program will exit with a successful exit code (0) while printing help text.  If the error is due to command-line parsing, it will exit with an error exit code (2), printing help text along with the error message.
+
+**PanicOnError**
+
+Panic is analogous to exceptions in C#.  As such, that is what this does.  It will throw an `InvalidOperationException` with the message of the exception being the reason for the error.  If you wrap the `Parse()` method in a try/catch, this is the exception to catch for parsing errors or the help flag being passed.
+
+If you want to override default behavior, you will need to create a FlagSet and not use the static implementation:
+
+```csharp
+var flagSet = new FlagSet("main", ErrorHandling.PanicOnError);
+```
+
+Not supplying all the defined flags at runtime will not result in an error.  The undefined flags will simply set to their default value.  Providing flags that aren't defined will result in an error.
+
+## Redirecting Output
+
+While using the static `Flag` class, output is directed to `Console.Error`.  This can be overridden by creating a `FlagSet` class and calling the `SetOutput` method.  An easy example of this would be to write to a text file:
+
+```csharp
+static void Main(string[] args)
+{
+    using (var writer = File.CreateText("output.txt"))
+    {
+        var flagSet = new FlagSet("default", ErrorHandling.ContinueOnError);
+        flagSet.SetOutput(writer);
+        var name = flagSet.String("name", "Mike", "The name of the person you wish to say hi to");
+        var goodbye = flagSet.Bool("bye", false, "Say goodbye instead");
+        var error = flagSet.Parse(args);
+        Console.WriteLine($"{(goodbye ? "Goodbye" : "Hello")}, {name}");
+    }
+}
+```
+
+In this example, any error text will be output to a file called "output.txt".
+
 ### Credits
 
 <a target="_blank" href="https://icons8.com/icons/set/empty-flag">Empty Flag icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>

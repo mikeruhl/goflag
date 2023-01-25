@@ -33,6 +33,4 @@ jobs:
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
-      run: dotnet test $env:Sln
-      env:
-        Sln: ${{ Solution_Name }}
+      run: dotnet test $env:Solution_Name

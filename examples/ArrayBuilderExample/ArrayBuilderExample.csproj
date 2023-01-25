@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Goflag\Goflag.csproj" />
+    <ProjectReference Include="..\..\src\Goflag\Goflag.csproj" />
   </ItemGroup>
 
 </Project>

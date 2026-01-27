@@ -1,0 +1,82 @@
+name: Publish to NuGet
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger on version tags like v1.0.0
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Extract version from tag
+      shell: pwsh
+      run: |
+        $tag = "${{ github.ref_name }}"
+        $version = $tag -replace '^v\.?', ''
+        echo "VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+        # Determine if this is a pre-release version
+        if ($version -match '-') {
+          echo "IS_PRERELEASE=true" | Out-File -FilePath $env:GITHUB_ENV -Append
+          Write-Host "Detected pre-release version: $version"
+        } else {
+          echo "IS_PRERELEASE=false" | Out-File -FilePath $env:GITHUB_ENV -Append
+          Write-Host "Detected stable release version: $version"
+        }
+
+    - name: Install .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: |
+          8.0.x
+          10.0.x
+
+    - name: Clean workspace
+      run: dotnet clean src/Goflag/Goflag.csproj --configuration Release
+
+    - name: Restore dependencies
+      run: dotnet restore src/Goflag.sln
+
+    - name: Build
+      run: dotnet build src/Goflag.sln --configuration Release --no-restore
+
+    - name: Run tests
+      run: dotnet test src/Goflag.sln --configuration Release --no-build --verbosity normal
+
+    - name: Pack NuGet package
+      run: |
+        New-Item -ItemType Directory -Path ./artifacts -Force
+        dotnet pack src/Goflag/Goflag.csproj --configuration Release --no-build --output ./artifacts /p:Version=${{ env.VERSION }} /p:PackageVersion=${{ env.VERSION }}
+        if ($LASTEXITCODE -ne 0) {
+          Write-Error "Pack failed with exit code $LASTEXITCODE"
+          exit $LASTEXITCODE
+        }
+        Write-Host "Pack completed. Checking artifacts..."
+        Get-ChildItem ./artifacts
+      shell: pwsh
+
+    - name: Publish to NuGet
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      run: |
+        if ("${{ env.IS_PRERELEASE }}" -eq "true") {
+          Write-Host "Publishing pre-release package version ${{ env.VERSION }} to NuGet..."
+        } else {
+          Write-Host "Publishing stable release version ${{ env.VERSION }} to NuGet..."
+        }
+        $nupkgs = Get-ChildItem ./artifacts/*.nupkg
+        foreach ($nupkg in $nupkgs) {
+          Write-Host "Pushing $($nupkg.Name)..."
+          dotnet nuget push $nupkg.FullName --source "https://api.nuget.org/v3/index.json" --api-key "$env:NUGET_API_KEY" --skip-duplicate
+        }
+      shell: pwsh

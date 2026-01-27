@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net481;net8.0;net10.0</TargetFrameworks>
     <AssemblyName>GoFlag</AssemblyName>
     <RootNamespace>GoFlag</RootNamespace>
     <Version>1.0.0</Version>
@@ -12,7 +12,7 @@
     <PackageVersion>1.0.0</PackageVersion>
     <PackageId>GoFlag</PackageId>
     <Company></Company>
-    <Copyright>Copyright (c) 2020, Mike Ruhl</Copyright>
+    <Copyright>Copyright (c) 2020-2026, Mike Ruhl</Copyright>
     <Summary>C# port of the golang flag package that facilitates command-line parsing.</Summary>
     <Description>C# port of the golang flag package that facilitates command-line parsing.</Description>
     <DefaultLanguage>en-US</DefaultLanguage>
@@ -27,6 +27,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>goflag-icon.png</PackageIcon>
     <PackageIconUrl>https://raw.githubusercontent.com/mikeruhl/goflag/main/goflag-icon.png</PackageIconUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/mikeruhl/Goflag</PackageProjectUrl>
     <PackageTags>command-line parsing flags command flag cmd</PackageTags>
     <PackageReleaseNotes>See https://github.com/mikeruhl/goflag/blob/main/CHANGELOG.md for details</PackageReleaseNotes>
@@ -42,13 +43,11 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <Optimize>true</Optimize>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.1' ">
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
-  </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFramework)'=='net461' or '$(TargetFramework)' == 'netstandard1.1'">
+  <ItemGroup Condition="'$(TargetFramework)'=='net481'">
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\goflag-icon.png" Pack="true" PackagePath=""/>
+    <None Include="..\..\README.md" Pack="true" PackagePath=""/>
   </ItemGroup>
 </Project>
